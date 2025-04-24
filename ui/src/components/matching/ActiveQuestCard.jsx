@@ -1,104 +1,122 @@
-import { useState, useEffect } from 'react';
-import { doc, onSnapshot } from 'firebase/firestore';
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { doc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { useAuth } from '../../contexts/AuthContext';
 import { completeQuest } from '../../services/matchingService';
+import { useNavigate } from 'react-router-dom';
+import { formatDistanceToNow } from 'date-fns';
 
-export default function ActiveQuestCard({ questId }) {
+const getStatusColor = (status) => {
+  switch (status) {
+    case 'open':
+      return 'bg-emerald-100 text-emerald-800';
+    case 'in_progress':
+      return 'bg-amber-100 text-amber-800';
+    case 'completed':
+      return 'bg-blue-100 text-blue-800';
+    default:
+      return 'bg-gray-100 text-gray-800';
+  }
+};
+
+export default function ActiveQuestCard() {
   const [quest, setQuest] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [completing, setCompleting] = useState(false);
-  const { user } = useAuth();
+  const [error, setError] = useState('');
+  const { currentUser, updateUserData } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (!questId) return;
+    if (!currentUser?.activeQuestId) {
+      setLoading(false);
+      return;
+    }
 
+    // Set up real-time listener for the quest
     const unsubscribe = onSnapshot(
-      doc(db, 'quests', questId),
+      doc(db, 'quests', currentUser.activeQuestId),
       (doc) => {
         if (doc.exists()) {
           setQuest({ id: doc.id, ...doc.data() });
-          setLoading(false);
         } else {
-          setError('Quest not found');
-          setLoading(false);
+          // Quest was deleted, clean up user state
+          updateUserData({
+            activeQuestId: null,
+            activeQuestStartDate: null
+          });
+          setQuest(null);
         }
+        setLoading(false);
       },
       (error) => {
-        console.error('Error fetching quest:', error);
+        console.error('Error listening to quest:', error);
         setError('Failed to load quest details');
         setLoading(false);
       }
     );
 
     return () => unsubscribe();
-  }, [questId]);
+  }, [currentUser?.activeQuestId, updateUserData]);
 
   const handleCompleteQuest = async () => {
     try {
-      setCompleting(true);
-      setError(null);
-      await completeQuest(questId, user.uid);
+      await completeQuest(quest.id, currentUser.uid);
+      navigate('/dashboard');
     } catch (error) {
       console.error('Error completing quest:', error);
-      setError(error.message || 'Failed to complete quest');
-    } finally {
-      setCompleting(false);
-    }
-  };
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'forming':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'active':
-        return 'bg-emerald-100 text-emerald-800';
-      case 'completed':
-        return 'bg-blue-100 text-blue-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
+      setError('Failed to complete quest');
     }
   };
 
   if (loading) {
     return (
-      <div className="animate-pulse bg-white rounded-lg shadow-md p-6">
-        <div className="h-4 bg-gray-200 rounded w-3/4 mb-4"></div>
-        <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-      </div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="animate-pulse bg-gradient-to-br from-amber-50 to-emerald-50 rounded-lg shadow-md p-6"
+      >
+        <div className="h-4 bg-emerald-200 rounded w-3/4 mb-4"></div>
+        <div className="h-4 bg-emerald-200 rounded w-1/2"></div>
+      </motion.div>
     );
   }
 
-  if (error || !quest) {
+  if (!quest) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-        <p className="text-red-600">{error || 'Unable to load quest'}</p>
-      </div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="bg-red-50 border border-red-200 rounded-lg p-4"
+      >
+        <p className="text-red-600">{error || 'No active quest'}</p>
+      </motion.div>
     );
   }
 
-  const currentMember = quest.teamMembers?.find(m => m.userId === user.uid);
-  const isSoloQuest = currentMember?.isSolo;
+  const timeLeft = quest.startTime?.toDate() 
+    ? formatDistanceToNow(quest.startTime.toDate(), { addSuffix: true })
+    : 'Time not set';
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-emerald-500">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-gradient-to-br from-amber-50 to-emerald-50 rounded-lg shadow-md p-6 border-l-4 border-emerald-500"
+    >
       <div className="flex justify-between items-start mb-4">
         <div>
-          <h3 className="text-xl font-semibold text-gray-900">{quest.title}</h3>
+          <h3 className="text-xl font-semibold text-emerald-800">{quest.title}</h3>
           <p className="text-sm text-gray-500 mt-1">
-            Started: {new Date(quest.startDate).toLocaleDateString()}
+            Starts: {timeLeft}
           </p>
         </div>
         <div className="flex flex-col items-end">
           <span className={`px-2 py-1 text-sm rounded-full ${getStatusColor(quest.status)}`}>
-            {quest.status}
+            {quest.status === 'open' ? '⚔️ Available' :
+             quest.status === 'in_progress' ? '🔥 Hot Quest' :
+             '🏆 Completed'}
           </span>
-          {isSoloQuest && (
-            <span className="mt-1 text-xs text-amber-600 font-medium">
-              Solo Quest
-            </span>
-          )}
         </div>
       </div>
 
@@ -106,32 +124,32 @@ export default function ActiveQuestCard({ questId }) {
 
       <div className="space-y-2 mb-4">
         <div className="flex items-center text-sm text-gray-500">
-          <span className="font-medium mr-2">Duration:</span>
+          <span className="font-medium mr-2">⏱️ Duration:</span>
           {quest.duration}
         </div>
         <div className="flex items-center text-sm text-gray-500">
-          <span className="font-medium mr-2">Location:</span>
+          <span className="font-medium mr-2">📍 Location:</span>
           {quest.location}
         </div>
-        {!isSoloQuest && (
-          <div className="flex items-center text-sm text-gray-500">
-            <span className="font-medium mr-2">Team Size:</span>
-            {quest.teamMembers?.length || 0}/{quest.maxTeamSize}
-          </div>
-        )}
+        <div className="flex items-center text-sm text-gray-500">
+          <span className="font-medium mr-2">👥 Team Size:</span>
+          {quest.teamMembers?.length || 0}/{quest.maxTeamSize}
+        </div>
       </div>
 
-      {!isSoloQuest && quest.teamMembers?.length > 0 && (
+      {!quest.teamMembers?.length > 0 && (
         <div className="mb-6">
           <h4 className="text-sm font-medium text-gray-900 mb-2">Team Members:</h4>
           <div className="space-y-2">
             {quest.teamMembers?.map((member) => (
-              <div
+              <motion.div
                 key={member.userId}
-                className="flex items-center justify-between bg-gray-50 p-2 rounded"
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="flex items-center justify-between bg-white p-2 rounded shadow-sm"
               >
                 <div className="flex items-center">
-                  <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-800 font-medium">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-emerald-500 flex items-center justify-center text-white font-medium">
                     {member.displayName[0].toUpperCase()}
                   </div>
                   <span className="ml-2 text-sm text-gray-700">{member.displayName}</span>
@@ -139,29 +157,18 @@ export default function ActiveQuestCard({ questId }) {
                 <span className="text-xs text-gray-500">
                   Joined {new Date(member.joinedAt).toLocaleDateString()}
                 </span>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
       )}
 
-      <div className="mt-6">
+      <div className="flex">
         <button
           onClick={handleCompleteQuest}
-          disabled={completing || quest.status === 'completed'}
-          className={`w-full py-2 px-4 rounded-md text-sm font-medium ${
-            completing || quest.status === 'completed'
-              ? 'bg-gray-300 cursor-not-allowed'
-              : isSoloQuest
-              ? 'bg-amber-600 text-white hover:bg-amber-700'
-              : 'bg-emerald-800 text-amber-100 hover:bg-emerald-700'
-          }`}
+          className="w-full px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors font-medium"
         >
-          {completing
-            ? 'Completing...'
-            : quest.status === 'completed'
-            ? 'Quest Completed'
-            : `Complete ${isSoloQuest ? 'Solo ' : ''}Quest`}
+          Complete Quest
         </button>
       </div>
 
@@ -170,6 +177,6 @@ export default function ActiveQuestCard({ questId }) {
           {error}
         </div>
       )}
-    </div>
+    </motion.div>
   );
 } 

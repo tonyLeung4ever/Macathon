@@ -227,39 +227,32 @@ export async function initializeQuests() {
 // Clean up expired quests
 export const cleanupExpiredQuests = async () => {
   try {
-    const questsSnapshot = await getDocs(collection(db, 'quests'));
     const now = new Date();
-
+    const questsSnapshot = await getDocs(collection(db, 'quests'));
+    
     for (const questDoc of questsSnapshot.docs) {
       const quest = questDoc.data();
+      const startTime = quest.startTime?.toDate();
+      const endTime = quest.endTime?.toDate();
       
-      try {
-        const eventDateTime = new Date(quest.eventDateTime);
-        const endTime = new Date(eventDateTime.getTime() + (quest.durationHours * 60 * 60 * 1000));
-
-        if (now > endTime || quest.status === 'completed') {
-          // Update users who had this quest active
-          if (quest.teamMembers) {
-            for (const member of quest.teamMembers) {
-              const userRef = doc(db, 'users', member.userId);
-              const userDoc = await getDoc(userRef);
-              
-              if (userDoc.exists() && userDoc.data().activeQuestId === questDoc.id) {
-                await updateDoc(userRef, {
-                  activeQuestId: null,
-                  activeQuestStartDate: null,
-                  isSoloQuesting: false
-                });
-              }
-            }
-          }
-
-          // Delete the expired quest
-          await deleteDoc(doc(db, 'quests', questDoc.id));
+      // Check if quest has expired (24 hours after end time or start time if no end time)
+      const expiryTime = endTime || startTime;
+      if (expiryTime && (now - expiryTime) > (24 * 60 * 60 * 1000)) {
+        // Get all users who have this as their active quest
+        const usersSnapshot = await getDocs(
+          query(collection(db, 'users'), where('activeQuestId', '==', questDoc.id))
+        );
+        
+        // Clean up user states
+        for (const userDoc of usersSnapshot.docs) {
+          await updateDoc(doc(db, 'users', userDoc.id), {
+            activeQuestId: null,
+            activeQuestStartDate: null
+          });
         }
-      } catch (error) {
-        console.error('Error processing quest:', questDoc.id, error);
-        continue;
+        
+        // Delete the quest
+        await deleteDoc(questDoc.ref);
       }
     }
   } catch (error) {
@@ -367,37 +360,38 @@ export const getQuestTeamMembers = async (questId) => {
 export const completeQuest = async (questId, userId) => {
   try {
     const questRef = doc(db, 'quests', questId);
-    const userRef = doc(db, 'users', userId);
-    
-    // Get quest and user data
     const questDoc = await getDoc(questRef);
-    const userDoc = await getDoc(userRef);
     
     if (!questDoc.exists()) {
       throw new Error('Quest not found');
     }
     
     const quest = questDoc.data();
-    const user = userDoc.data();
-
-    if (user.activeQuestId !== questId) {
-      throw new Error('This is not your active quest');
-    }
-
-    // Update user's completed quests and remove active quest
-    await updateDoc(userRef, {
-      activeQuestId: null,
-      activeQuestStartDate: null,
-      completedQuests: arrayUnion({
-        questId,
-        completedDate: new Date().toISOString(),
-        questTitle: quest.title
+    
+    // Get all team members
+    const usersSnapshot = await getDocs(
+      query(collection(db, 'users'), where('activeQuestId', '==', questId))
+    );
+    
+    // Update all team members' states
+    const updatePromises = usersSnapshot.docs.map(userDoc => 
+      updateDoc(doc(db, 'users', userDoc.id), {
+        activeQuestId: null,
+        activeQuestStartDate: null,
+        completedQuests: arrayUnion({
+          questId,
+          completedAt: new Date(),
+          title: quest.title,
+          teamSize: usersSnapshot.size
+        })
       })
-    });
-
-    // Delete the quest document
+    );
+    
+    await Promise.all(updatePromises);
+    
+    // Delete the quest
     await deleteDoc(questRef);
-
+    
     return true;
   } catch (error) {
     console.error('Error completing quest:', error);

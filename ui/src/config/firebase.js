@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, query, where, setDoc, enableIndexedDbPersistence } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, query, where, setDoc, enableIndexedDbPersistence, deleteDoc } from 'firebase/firestore';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 import { getAnalytics, isSupported } from "firebase/analytics";
 
@@ -212,17 +212,22 @@ export const firestoreOperations = {
 export const initializeDummyData = async () => {
   if (process.env.NODE_ENV === 'development') {
     try {
-      // Add dummy quests
-      for (const quest of dummyQuests) {
-        const { id, ...questData } = quest;
-        await firestoreOperations.createQuest(questData);
-      }
+      // Clear existing quests
+      const questsRef = collection(db, COLLECTIONS.QUESTS);
+      const snapshot = await getDocs(questsRef);
+      const deletePromises = snapshot.docs.map(doc => deleteDoc(doc.ref));
+      await Promise.all(deletePromises);
 
-      // Add dummy users
-      for (const user of dummyUsers) {
-        const { uid, ...userData } = user;
-        await firestoreOperations.createUser(userData);
-      }
+      // Add new dummy quests
+      const addPromises = dummyQuests.map(quest => {
+        const { id, ...questData } = quest;
+        return setDoc(doc(db, COLLECTIONS.QUESTS, id), {
+          ...questData,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        });
+      });
+      await Promise.all(addPromises);
 
       console.log('Dummy data initialized in Firestore');
     } catch (error) {
@@ -235,68 +240,87 @@ export const initializeDummyData = async () => {
 export const dummyQuests = [
   {
     id: "q1",
-    title: "Urban Photography Walk",
-    description: "Explore the city and capture unique moments with your camera",
-    requiredSkillLevel: 2,
-    maxTeamSize: 3,
-    status: "open",
-    currentTeams: [],
-    category: "photography",
-    duration: "2 hours",
-    location: "Downtown",
-    tags: ["photography", "exploration", "urban"]
-  },
-  {
-    id: "q2",
-    title: "Community Garden Setup",
-    description: "Help set up a community garden in your neighborhood",
-    requiredSkillLevel: 1,
-    maxTeamSize: 4,
-    status: "open",
-    currentTeams: [],
-    category: "gardening",
-    duration: "4 hours",
-    location: "Community Center",
-    tags: ["gardening", "community", "outdoor"]
-  },
-  {
-    id: "q3",
     title: "Coding Workshop",
     description: "Learn basic web development in a collaborative environment",
-    requiredSkillLevel: 3,
     maxTeamSize: 3,
     status: "open",
     currentTeams: [],
     category: "coding",
     duration: "3 hours",
-    location: "Tech Hub",
-    tags: ["coding", "technology", "learning"]
+    startTime: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(), // 2 hours from now
+    location: "Learning and Teaching Building (LTB)",
+    tags: ["coding", "technology", "learning"],
+    matchScore: 75
   },
   {
-    id: "q4",
-    title: "Street Art Tour",
-    description: "Discover and document local street art",
-    requiredSkillLevel: 1,
+    id: "q2",
+    title: "Community Garden Setup",
+    description: "Help set up a community garden on campus",
     maxTeamSize: 4,
     status: "open",
     currentTeams: [],
-    category: "art",
-    duration: "2.5 hours",
-    location: "Arts District",
-    tags: ["art", "exploration", "urban"]
+    category: "gardening",
+    duration: "4 hours",
+    startTime: new Date(Date.now() + 4 * 60 * 60 * 1000).toISOString(), // 4 hours from now
+    location: "Campus Green",
+    tags: ["gardening", "community", "outdoor"],
+    matchScore: 75
   },
   {
-    id: "q5",
+    id: "q3",
     title: "Board Game Night",
     description: "Organize and host a board game night",
-    requiredSkillLevel: 1,
     maxTeamSize: 6,
     status: "open",
     currentTeams: [],
     category: "games",
     duration: "3 hours",
-    location: "Game Cafe",
-    tags: ["games", "social", "indoor"]
+    startTime: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // Tomorrow
+    location: "Campus Centre",
+    tags: ["games", "social", "indoor"],
+    matchScore: 75
+  },
+  {
+    id: "q4",
+    title: "Campus Art Tour",
+    description: "Discover and document campus art installations",
+    maxTeamSize: 4,
+    status: "open",
+    currentTeams: [],
+    category: "art",
+    duration: "2.5 hours",
+    startTime: new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString(), // 5 hours from now
+    location: "Monash Gallery",
+    tags: ["art", "exploration", "culture"],
+    matchScore: 75
+  },
+  {
+    id: "q5",
+    title: "Campus Photography Walk",
+    description: "Explore the campus and capture unique moments with your camera",
+    maxTeamSize: 3,
+    status: "open",
+    currentTeams: [],
+    category: "photography",
+    duration: "2 hours",
+    startTime: new Date(Date.now() + 3 * 60 * 60 * 1000).toISOString(), // 3 hours from now
+    location: "Sir Louis Matheson Library",
+    tags: ["photography", "exploration", "campus"],
+    matchScore: 75
+  },
+  {
+    id: "q6",
+    title: "Food Festival Planning",
+    description: "Help organize and plan the upcoming campus food festival",
+    maxTeamSize: 5,
+    status: "open",
+    currentTeams: [],
+    category: "community",
+    duration: "5 hours",
+    startTime: new Date(Date.now() + 6 * 60 * 60 * 1000).toISOString(), // 6 hours from now
+    location: "Campus Centre Food Court",
+    tags: ["food", "community", "planning"],
+    matchScore: 75
   }
 ];
 
