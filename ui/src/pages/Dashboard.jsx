@@ -64,11 +64,7 @@ export default function Dashboard() {
                 Ready to embark on your next adventure?
               </p>
             </div>
-            <div className="flex items-center space-x-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-emerald-600">Lv. 2</div>
-                <div className="text-sm text-gray-500">Explorer</div>
-              </div>
+            <div className="flex items-center">
               <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-400 to-emerald-500 flex items-center justify-center text-white text-2xl">
                 {user?.displayName?.[0]?.toUpperCase() || 'E'}
               </div>
