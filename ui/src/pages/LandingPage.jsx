@@ -14,7 +14,7 @@ const LandingPage = () => {
     const timer2 = setTimeout(() => setShowSecondLine(true), 2500);
     const timer3 = setTimeout(() => setShowQuestionMark(true), 4000);
     const timer4 = setTimeout(() => setTransitionToMain(true), 5500);
-    const timer5 = setTimeout(() => navigate('/main'), 6000);
+    const timer5 = setTimeout(() => navigate('/dashboard'), 6000);
 
     return () => {
       clearTimeout(timer1);
