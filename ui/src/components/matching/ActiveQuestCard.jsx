@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { doc, onSnapshot, updateDoc } from 'firebase/firestore';
+import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { useAuth } from '../../contexts/AuthContext';
 import { completeQuest } from '../../services/matchingService';
@@ -20,31 +20,27 @@ const getStatusColor = (status) => {
   }
 };
 
-export default function ActiveQuestCard() {
+export default function ActiveQuestCard({ questId }) {
   const [quest, setQuest] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const { currentUser, updateUserData } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!currentUser?.activeQuestId) {
+    if (!questId) {
       setLoading(false);
       return;
     }
 
     // Set up real-time listener for the quest
     const unsubscribe = onSnapshot(
-      doc(db, 'quests', currentUser.activeQuestId),
+      doc(db, 'quests', questId),
       (doc) => {
         if (doc.exists()) {
           setQuest({ id: doc.id, ...doc.data() });
         } else {
-          // Quest was deleted, clean up user state
-          updateUserData({
-            activeQuestId: null,
-            activeQuestStartDate: null
-          });
+          // Quest was deleted
           setQuest(null);
         }
         setLoading(false);
@@ -57,15 +53,23 @@ export default function ActiveQuestCard() {
     );
 
     return () => unsubscribe();
-  }, [currentUser?.activeQuestId, updateUserData]);
+  }, [questId]);
 
   const handleCompleteQuest = async () => {
+    if (!user || !quest) {
+      setError('Unable to complete quest - please try again');
+      return;
+    }
+
     try {
-      await completeQuest(quest.id, currentUser.uid);
-      navigate('/dashboard');
+      setLoading(true);
+      await completeQuest(quest.id, user.uid);
+      // Force a page reload to refresh all data
+      window.location.reload();
     } catch (error) {
       console.error('Error completing quest:', error);
-      setError('Failed to complete quest');
+      setError('Failed to complete quest. Please try again.');
+      setLoading(false);
     }
   };
 
@@ -94,8 +98,11 @@ export default function ActiveQuestCard() {
     );
   }
 
-  const timeLeft = quest.startTime?.toDate() 
-    ? formatDistanceToNow(quest.startTime.toDate(), { addSuffix: true })
+  const timeLeft = quest.startTime 
+    ? formatDistanceToNow(
+        quest.startTime?.toDate?.() || new Date(quest.startTime),
+        { addSuffix: true }
+      )
     : 'Time not set';
 
   return (

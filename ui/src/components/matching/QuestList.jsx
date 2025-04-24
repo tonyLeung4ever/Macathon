@@ -117,17 +117,10 @@ export default function QuestList() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-7xl mx-auto"
       >
         {spots.map((spot) => (
-          <motion.div
-            key={spot.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="h-full"
-          >
-            <QuestCard quest={spot} />
-          </motion.div>
+          <QuestCard key={spot.id} quest={spot} />
         ))}
       </motion.div>
     </div>

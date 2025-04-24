@@ -128,59 +128,95 @@ const QuestCard = ({ quest: initialQuest }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 flex flex-col h-full">
-      <div className="flex justify-between items-start mb-4">
-        <div>
-          <h3 className="text-xl font-semibold">{quest.title}</h3>
-          <div className="flex items-center mt-2 space-x-2">
-            <span className="bg-emerald-100 text-emerald-800 text-sm px-2 py-1 rounded">Available</span>
-            <span className="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded">{quest.matchScore}% Match</span>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      transition={{ duration: 0.2 }}
+      className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100"
+    >
+      <div className="p-4 sm:p-5">
+        {/* Header */}
+        <div className="flex items-start justify-between mb-3">
+          <div className="flex-1">
+            <h3 className="text-lg font-semibold text-gray-900 leading-tight mb-1">
+              {quest.title}
+            </h3>
+            <div className="flex flex-wrap gap-2 items-center">
+              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(quest.status)}`}>
+                {getStatusDisplay(quest.status)}
+              </span>
+              <span className="text-sm font-medium text-emerald-600">
+                {Math.round(quest.matchScore)}% Match
+              </span>
+            </div>
+          </div>
+          <span className="text-2xl opacity-75">
+            {getQuestIcon(quest.category)}
+          </span>
+        </div>
+
+        {/* Description */}
+        <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+          {quest.description}
+        </p>
+
+        {/* Info Grid */}
+        <div className="grid grid-cols-2 gap-3 text-sm mb-4">
+          <div className="flex items-center text-gray-600">
+            <span className="mr-1.5">⏰</span>
+            {timeLeft}
+          </div>
+          {getTeamSizeDisplay()}
+          <div className="flex items-center text-gray-600">
+            <span className="mr-1.5">📅</span>
+            {formatStartTime(quest.startTime)}
+          </div>
+          <div className="flex items-center text-gray-600">
+            <span className="mr-1.5">📍</span>
+            <span className="truncate">{quest.location}</span>
           </div>
         </div>
-        {quest.icon && <span className="text-2xl">{quest.icon}</span>}
-      </div>
 
-      <p className="text-gray-600 mb-4">{quest.description}</p>
+        {/* Tags */}
+        <div className="flex flex-wrap gap-1.5 mb-4">
+          {quest.tags.map(tag => (
+            <span 
+              key={tag}
+              className="px-2 py-1 text-xs rounded-full bg-gray-50 text-gray-600 border border-gray-100"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
 
-      <div className="space-y-3 mb-4">
-        <div className="flex items-center text-sm text-gray-500">
-          <span className="mr-2">⏱️</span>
-          {quest.duration}h {quest.minutes}m
-        </div>
-        <div className="flex items-center text-sm text-gray-500">
-          <span className="mr-2">👥</span>
-          {quest.currentTeamSize || 0}/{quest.maxTeamSize} spots
-        </div>
-        <div className="flex items-center text-sm text-gray-500">
-          <span className="mr-2">📅</span>
-          {new Date(quest.eventTime).toLocaleString()}
-        </div>
-        <div className="flex items-center text-sm text-gray-500">
-          <span className="mr-2">📍</span>
-          {quest.location}
+        {/* Action Button */}
+        <div className="mt-auto">
+          {isQuestJoinable() ? (
+            <button
+              onClick={handleJoinQuest}
+              disabled={joining}
+              className="w-full py-3 px-4 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 active:bg-emerald-800 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+            >
+              {joining ? 'Joining...' : 'Join Quest'}
+            </button>
+          ) : (
+            <button
+              disabled
+              className="w-full py-3 px-4 bg-gray-100 text-gray-500 text-sm font-medium rounded-lg cursor-not-allowed"
+            >
+              {new Date() >= new Date(quest.startTime) ? 'Started' :
+               quest.status === 'completed' ? 'Completed' :
+               quest.status === 'active' ? 'In Progress' :
+               user?.activeQuestId ? 'Complete Current Quest First' :
+               quest.teamMembers?.some(member => member.userId === user.uid) ? 'Already Joined' :
+               'Team Full'}
+            </button>
+          )}
         </div>
       </div>
-
-      <div className="flex flex-wrap gap-2 mb-4">
-        {quest.tags?.map((tag) => (
-          <span
-            key={tag}
-            className="bg-gray-100 text-gray-700 text-sm px-2 py-1 rounded"
-          >
-            {tag}
-          </span>
-        ))}
-      </div>
-
-      <div className="mt-auto">
-        <button
-          onClick={() => onJoinQuest(quest.id)}
-          className="w-full bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700 transition-colors"
-        >
-          Join Quest
-        </button>
-      </div>
-    </div>
+    </motion.div>
   );
 };
 
