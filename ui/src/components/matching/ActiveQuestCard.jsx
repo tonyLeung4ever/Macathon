@@ -48,6 +48,19 @@ export default function ActiveQuestCard({ questId }) {
     }
   };
 
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'forming':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'active':
+        return 'bg-emerald-100 text-emerald-800';
+      case 'completed':
+        return 'bg-blue-100 text-blue-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
   if (loading) {
     return (
       <div className="animate-pulse bg-white rounded-lg shadow-md p-6">
@@ -65,6 +78,9 @@ export default function ActiveQuestCard({ questId }) {
     );
   }
 
+  const currentMember = quest.teamMembers?.find(m => m.userId === user.uid);
+  const isSoloQuest = currentMember?.isSolo;
+
   return (
     <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-emerald-500">
       <div className="flex justify-between items-start mb-4">
@@ -74,9 +90,16 @@ export default function ActiveQuestCard({ questId }) {
             Started: {new Date(quest.startDate).toLocaleDateString()}
           </p>
         </div>
-        <span className="px-2 py-1 text-sm rounded-full bg-emerald-100 text-emerald-800">
-          {quest.status}
-        </span>
+        <div className="flex flex-col items-end">
+          <span className={`px-2 py-1 text-sm rounded-full ${getStatusColor(quest.status)}`}>
+            {quest.status}
+          </span>
+          {isSoloQuest && (
+            <span className="mt-1 text-xs text-amber-600 font-medium">
+              Solo Quest
+            </span>
+          )}
+        </div>
       </div>
 
       <p className="text-gray-600 mb-4">{quest.description}</p>
@@ -90,11 +113,37 @@ export default function ActiveQuestCard({ questId }) {
           <span className="font-medium mr-2">Location:</span>
           {quest.location}
         </div>
-        <div className="flex items-center text-sm text-gray-500">
-          <span className="font-medium mr-2">Team Size:</span>
-          {quest.currentTeamSize}/{quest.maxTeamSize}
-        </div>
+        {!isSoloQuest && (
+          <div className="flex items-center text-sm text-gray-500">
+            <span className="font-medium mr-2">Team Size:</span>
+            {quest.teamMembers?.length || 0}/{quest.maxTeamSize}
+          </div>
+        )}
       </div>
+
+      {!isSoloQuest && quest.teamMembers?.length > 0 && (
+        <div className="mb-6">
+          <h4 className="text-sm font-medium text-gray-900 mb-2">Team Members:</h4>
+          <div className="space-y-2">
+            {quest.teamMembers?.map((member) => (
+              <div
+                key={member.userId}
+                className="flex items-center justify-between bg-gray-50 p-2 rounded"
+              >
+                <div className="flex items-center">
+                  <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-800 font-medium">
+                    {member.displayName[0].toUpperCase()}
+                  </div>
+                  <span className="ml-2 text-sm text-gray-700">{member.displayName}</span>
+                </div>
+                <span className="text-xs text-gray-500">
+                  Joined {new Date(member.joinedAt).toLocaleDateString()}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="mt-6">
         <button
@@ -103,6 +152,8 @@ export default function ActiveQuestCard({ questId }) {
           className={`w-full py-2 px-4 rounded-md text-sm font-medium ${
             completing || quest.status === 'completed'
               ? 'bg-gray-300 cursor-not-allowed'
+              : isSoloQuest
+              ? 'bg-amber-600 text-white hover:bg-amber-700'
               : 'bg-emerald-800 text-amber-100 hover:bg-emerald-700'
           }`}
         >
@@ -110,7 +161,7 @@ export default function ActiveQuestCard({ questId }) {
             ? 'Completing...'
             : quest.status === 'completed'
             ? 'Quest Completed'
-            : 'Complete Quest'}
+            : `Complete ${isSoloQuest ? 'Solo ' : ''}Quest`}
         </button>
       </div>
 
