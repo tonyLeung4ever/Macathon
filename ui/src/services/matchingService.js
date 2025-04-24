@@ -111,36 +111,99 @@ export const findPotentialTeammates = async (questId, userId) => {
 export const joinQuest = async (questId, userId) => {
   try {
     const questRef = doc(db, 'quests', questId);
+    const userRef = doc(db, 'users', userId);
+    
+    // Get quest and user data
     const questDoc = await getDoc(questRef);
+    const userDoc = await getDoc(userRef);
+    
+    if (!questDoc.exists()) {
+      throw new Error('Quest not found');
+    }
+    
     const quest = questDoc.data();
+    const user = userDoc.data();
+
+    if (quest.status === 'completed') {
+      throw new Error('This quest has already been completed');
+    }
 
     if (quest.currentTeamSize >= quest.maxTeamSize) {
       throw new Error('Quest team is already full');
     }
 
-    // Add user to quest's interested users
+    if (user.activeQuestId) {
+      throw new Error('You already have an active quest');
+    }
+
+    // Update quest with new team member
     await updateDoc(questRef, {
       interestedUsers: arrayUnion(userId),
-      currentTeamSize: (quest.currentTeamSize || 0) + 1
+      currentTeamSize: (quest.currentTeamSize || 0) + 1,
+      status: 'active',
+      startDate: new Date().toISOString()
     });
 
-    // Check if quest can be activated
-    if ((quest.currentTeamSize || 0) + 1 >= quest.minTeamSize) {
-      // Create active quest
-      await addDoc(collection(db, 'activeQuests'), {
-        questId,
-        teamMembers: [...(quest.interestedUsers || []), userId],
-        startDate: new Date().toISOString(),
-        status: 'active'
-      });
-
-      // Update original quest status
-      await updateDoc(questRef, { status: 'active' });
-    }
+    // Update user with active quest
+    await updateDoc(userRef, {
+      activeQuestId: questId,
+      activeQuestStartDate: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    });
 
     return true;
   } catch (error) {
     console.error('Error joining quest:', error);
+    throw error;
+  }
+};
+
+// Complete a quest
+export const completeQuest = async (questId, userId) => {
+  try {
+    const questRef = doc(db, 'quests', questId);
+    const userRef = doc(db, 'users', userId);
+    
+    // Get quest and user data
+    const questDoc = await getDoc(questRef);
+    const userDoc = await getDoc(userRef);
+    
+    if (!questDoc.exists()) {
+      throw new Error('Quest not found');
+    }
+    
+    const quest = questDoc.data();
+    const user = userDoc.data();
+
+    if (quest.status === 'completed') {
+      throw new Error('This quest has already been completed');
+    }
+
+    if (user.activeQuestId !== questId) {
+      throw new Error('This is not your active quest');
+    }
+
+    // Update quest status
+    await updateDoc(questRef, {
+      status: 'completed',
+      completedDate: new Date().toISOString(),
+      completedBy: arrayUnion(userId)
+    });
+
+    // Update user's completed quests and remove active quest
+    await updateDoc(userRef, {
+      activeQuestId: null,
+      activeQuestStartDate: null,
+      completedQuests: arrayUnion({
+        questId,
+        completedDate: new Date().toISOString(),
+        questTitle: quest.title
+      })
+    });
+
+    return true;
+  } catch (error) {
+    console.error('Error completing quest:', error);
     throw error;
   }
 };

@@ -6,6 +6,7 @@ export default function QuestList() {
   const [quests, setQuests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [joiningQuest, setJoiningQuest] = useState(null);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -28,12 +29,16 @@ export default function QuestList() {
 
   const handleJoinQuest = async (questId) => {
     try {
+      setJoiningQuest(questId);
+      setError('');
       await joinQuest(questId, user.uid);
       // Reload quests to update status
       await loadQuests();
     } catch (error) {
       console.error('Error joining quest:', error);
-      setError('Failed to join quest');
+      setError(error.message || 'Failed to join quest');
+    } finally {
+      setJoiningQuest(null);
     }
   };
 
@@ -88,6 +93,10 @@ export default function QuestList() {
                     <span className="font-medium">Location:</span>
                     <span className="ml-2">{quest.location}</span>
                   </div>
+                  <div className="flex items-center text-sm text-gray-500">
+                    <span className="font-medium">Status:</span>
+                    <span className="ml-2 capitalize">{quest.status || 'open'}</span>
+                  </div>
                 </div>
                 <div className="mt-4 flex flex-wrap gap-2">
                   {quest.tags.map((tag) => (
@@ -101,14 +110,21 @@ export default function QuestList() {
                 </div>
                 <button
                   onClick={() => handleJoinQuest(quest.id)}
-                  disabled={quest.status === 'active'}
-                  className={`mt-4 w-full py-2 px-4 rounded-md text-sm font-medium ${
-                    quest.status === 'active'
+                  disabled={quest.status === 'active' || quest.status === 'completed' || joiningQuest === quest.id || user.activeQuestId}
+                  className={`mt-4 w-full py-2 px-4 rounded-md text-sm font-medium transition-colors
+                    ${quest.status === 'active' || quest.status === 'completed' || user.activeQuestId
                       ? 'bg-gray-300 cursor-not-allowed'
-                      : 'bg-emerald-800 text-amber-100 hover:bg-emerald-700'
-                  }`}
+                      : 'bg-emerald-800 text-amber-100 hover:bg-emerald-700'}`}
                 >
-                  {quest.status === 'active' ? 'Quest Active' : 'Join Quest'}
+                  {joiningQuest === quest.id
+                    ? 'Joining...'
+                    : quest.status === 'completed'
+                    ? 'Completed'
+                    : quest.status === 'active'
+                    ? 'In Progress'
+                    : user.activeQuestId
+                    ? 'Complete Current Quest First'
+                    : 'Join Quest'}
                 </button>
               </div>
             </div>
