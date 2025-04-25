@@ -5,6 +5,8 @@ import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard';
 import AuthPage from './pages/AuthPage';
 import PersonalityQuiz from './pages/onboardingQuestions'; 
+import { initializeOnboardingQuestions } from './config/firebase';
+import { useEffect } from 'react';
 
 // Protected Route component
 function ProtectedRoute({ children }) {
@@ -22,6 +24,11 @@ function ProtectedRoute({ children }) {
 }
 
 function App() {
+  useEffect(() => {
+    // Initialize onboarding questions in Firebase
+    initializeOnboardingQuestions();
+  }, []);
+
   return (
     <AuthProvider>
       <Router>
