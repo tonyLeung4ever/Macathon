@@ -184,14 +184,12 @@ const QuestCard = ({ quest: initialQuest }) => {
 
         {/* Tags */}
         <div className="flex flex-wrap gap-1.5 mb-4">
-          {quest.tags.map(tag => (
-            <span 
-              key={tag}
-              className="px-2 py-1 text-xs rounded-full bg-gray-50 text-gray-600 border border-gray-100"
-            >
-              {tag}
-            </span>
-          ))}
+        {quest.tags && Array.isArray(quest.tags) && quest.tags.map(tag => (
+  <span key={tag} className="px-2 py-1 text-xs rounded-full bg-gray-50 text-gray-600 border border-gray-100">
+    {tag}
+  </span>
+))}
+
         </div>
 
         {/* Action Button */}
