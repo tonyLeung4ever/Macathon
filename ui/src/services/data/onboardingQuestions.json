@@ -1,0 +1,234 @@
+[
+    {
+      "question": "It’s your day off from university, you just woke up, and the sun is shining. Would you rather:",
+      "answers": {
+        "A": {
+          "text": "Go for a run outside",
+          "tags": ["outdoorsy", "active", "motivated"]
+        },
+        "B": {
+          "text": "Cook yourself a big, hearty meal",
+          "tags": ["cozy", "self-care", "creative"]
+        },
+        "C": {
+          "text": "Clean up and organize your room",
+          "tags": ["productive", "planner", "solo"]
+        },
+        "D": {
+          "text": "Do something online (watch tiktoks or reels or something)",
+          "tags": ["introvert", "chill", "digital-native"]
+        }
+      }
+    },
+    {
+      "question": "It’s Friday evening. Would you rather:",
+      "answers": {
+        "A": {
+          "text": "Go to a games night",
+          "tags": ["social", "fun", "light-hearted"]
+        },
+        "B": {
+          "text": "Go out dancing with your friends to a party",
+          "tags": ["extrovert", "adventurous", "chaotic"]
+        },
+        "C": {
+          "text": "Watch a good movie alone",
+          "tags": ["introvert", "cozy", "reflective"]
+        },
+        "D": {
+          "text": "Work on assignments",
+          "tags": ["driven", "independent", "focused"]
+        }
+      }
+    },
+    {
+      "question": "You bump into an acquaintance at a café. Do you:",
+      "answers": {
+        "A": {
+          "text": "Invite them to sit with you",
+          "tags": ["friendly", "social", "warm"]
+        },
+        "B": {
+          "text": "Panic slightly but say hi",
+          "tags": ["awkward", "aware", "introvert"]
+        },
+        "C": {
+          "text": "Pretend you didn’t see them",
+          "tags": ["shy", "anxious", "private"]
+        },
+        "D": {
+          "text": "Compliment their outfit and bounce",
+          "tags": ["funny", "confident", "casual"]
+        }
+      }
+    },
+    {
+      "question": "It's the night before an assignment is due. Would you rather:",
+      "answers": {
+        "A": {
+          "text": "Pull an all-nighter with friends",
+          "tags": ["chaotic", "collaborative", "gritty"]
+        },
+        "B": {
+          "text": "Cry a little, then start working",
+          "tags": ["relatable", "resilient", "emotional"]
+        },
+        "C": {
+          "text": "Email for an extension",
+          "tags": ["realistic", "resourceful", "academic"]
+        },
+        "D": {
+          "text": "Start a new project instead (oops)",
+          "tags": ["creative", "chaotic", "drifty"]
+        }
+      }
+    },
+    {
+      "question": "It's mental recharge time. Would you rather:",
+      "answers": {
+        "A": {
+          "text": "Bake something experimental",
+          "tags": ["creative", "cozy", "tactile"]
+        },
+        "B": {
+          "text": "Rewatch comfort shows",
+          "tags": ["introvert", "cozy", "escapist"]
+        },
+        "C": {
+          "text": "Go for a nature walk",
+          "tags": ["outdoorsy", "reflective", "recharging"]
+        },
+        "D": {
+          "text": "Workout!",
+          "tags": ["motivated", "disciplined", "active"]
+        }
+      }
+    },
+    {
+      "question": "You’re stuck on a group assignment. Do you:",
+      "answers": {
+        "A": {
+          "text": "Take charge and delegate tasks",
+          "tags": ["leadership", "organized", "confident"]
+        },
+        "B": {
+          "text": "Quietly do all the work",
+          "tags": ["responsible", "introvert", "hardworking"]
+        },
+        "C": {
+          "text": "Distract the group with memes",
+          "tags": ["funny", "chaotic", "icebreaker"]
+        },
+        "D": {
+          "text": "Convince everyone to pivot ideas",
+          "tags": ["creative", "visionary", "influencer"]
+        }
+      }
+    },
+    {
+      "question": "Your tutorial got cancelled last minute. Would you rather:",
+      "answers": {
+        "A": {
+          "text": "Head straight to the nearest bubble tea",
+          "tags": ["spontaneous", "social", "sweet tooth"]
+        },
+        "B": {
+          "text": "Catch up on readings (finally)",
+          "tags": ["academic", "structured", "ambitious"]
+        },
+        "C": {
+          "text": "Call a friend for a spontaneous hang",
+          "tags": ["social", "connected", "present"]
+        },
+        "D": {
+          "text": "Wander campus aimlessly for vibes",
+          "tags": ["adventurous", "free-spirited", "chill"]
+        }
+      }
+    },
+    {
+      "question": "You go viral on campus confessions. Would you rather it be for:",
+      "answers": {
+        "A": {
+          "text": "A wholesome act",
+          "tags": ["empathetic", "soft", "kind"]
+        },
+        "B": {
+          "text": "A chaotic group project story",
+          "tags": ["funny", "chaotic", "storyteller"]
+        },
+        "C": {
+          "text": "A meme-worthy outfit",
+          "tags": ["bold", "confident", "goofy"]
+        },
+        "D": {
+          "text": "Your secret campus crush",
+          "tags": ["romantic", "sentimental", "honest"]
+        }
+      }
+    },
+    {
+      "question": "You get dared to try something you’ve never done. Would you rather:",
+      "answers": {
+        "A": {
+          "text": "Join a dance flash mob",
+          "tags": ["bold", "social", "movement"]
+        },
+        "B": {
+          "text": "Try stand-up comedy at open mic",
+          "tags": ["funny", "creative", "confident"]
+        },
+        "C": {
+          "text": "Speed-date at a themed event",
+          "tags": ["outgoing", "open-minded", "curious"]
+        },
+        "D": {
+          "text": "Paint in front of strangers",
+          "tags": ["artsy", "vulnerable", "creative"]
+        }
+      }
+    },
+    {
+      "question": "You’re offered free classes for a week. Would you rather take:",
+      "answers": {
+        "A": {
+          "text": "Pottery",
+          "tags": ["tactile", "calm", "creative"]
+        },
+        "B": {
+          "text": "Lock-picking",
+          "tags": ["clever", "mischievous", "problem-solver"]
+        },
+        "C": {
+          "text": "Improv theater",
+          "tags": ["spontaneous", "social", "quick-thinker"]
+        },
+        "D": {
+          "text": "Street photography",
+          "tags": ["visual", "observant", "solo"]
+        }
+      }
+    },
+    {
+      "question": "You’re forced to delete all apps except one. Which do you keep?",
+      "answers": {
+        "A": {
+          "text": "Instagram for aesthetics",
+          "tags": ["aesthetic", "creative", "social"]
+        },
+        "B": {
+          "text": "Reddit for rabbit holes",
+          "tags": ["curious", "nerdy", "deep-thinker"]
+        },
+        "C": {
+          "text": "TikTok for chaos",
+          "tags": ["chaotic", "fun", "trendy"]
+        },
+        "D": {
+          "text": "Spotify for sanity",
+          "tags": ["introspective", "emotional", "music-lover"]
+        }
+      }
+    }
+  ]
+  
