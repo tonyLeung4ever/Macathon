@@ -46,7 +46,7 @@ export default function SignupForm() {
         personalityTraits: []
       });
 
-      navigate('/dashboard');
+      navigate('/onboarding'); //changed from navigate('/dashboard');
     } catch (error) {
       setError('Failed to create an account: ' + error.message);
     } finally {

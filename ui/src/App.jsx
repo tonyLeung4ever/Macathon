@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard';
 import AuthPage from './pages/AuthPage';
+import PersonalityQuiz from './pages/onboardingQuestions'; 
 
 // Protected Route component
 function ProtectedRoute({ children }) {
@@ -29,6 +30,7 @@ function App() {
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/auth" element={<AuthPage />} />
+            <Route path="/onboarding" element={<PersonalityQuiz />} />
             <Route
               path="/dashboard"
               element={
@@ -44,4 +46,4 @@ function App() {
   );
 }
 
-export default App; 
+export default App;
