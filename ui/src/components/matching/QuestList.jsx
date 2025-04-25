@@ -27,7 +27,7 @@ export const getStatusDisplay = (status) => {
   }
 };
 
-export default function QuestList() {
+export default function QuestList({ quests = null }) {
   const [spots, setSpots] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -101,7 +101,7 @@ export default function QuestList() {
     );
   }
 
-  if (spots.length === 0) {
+  if ((quests && quests.length === 0) || (!quests && spots.length === 0)) {
     return (
       <div className="flex justify-center items-center min-h-screen px-4 py-6">
         <div className="text-center text-gray-600 bg-gray-50 rounded-lg p-6 w-full max-w-sm shadow-sm">
@@ -119,9 +119,10 @@ export default function QuestList() {
         animate={{ opacity: 1 }}
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-7xl mx-auto"
       >
-        {spots.map((spot) => (
-          <QuestCard key={spot.id} quest={spot} />
-        ))}
+        {(quests || spots).map((quest) => (
+  <QuestCard key={quest.id} quest={quest} />
+))}
+
       </motion.div>
     </div>
   );

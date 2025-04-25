@@ -7,24 +7,38 @@ import { initializeDummyData } from '../config/firebase';
 import { SparklesIcon as SparklesIconOutline } from '@heroicons/react/24/outline';
 import { UserGroupIcon as UserGroupIconOutline } from '@heroicons/react/24/outline';
 import { TrophyIcon as TrophyIconOutline } from '@heroicons/react/24/outline';
+import { matchSideQuests } from '../utils/matchSideQuests';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../config/firebase';
+
+
 
 export default function Dashboard() {
   const { user } = useAuth();
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [recommendedQuests, setRecommendedQuests] = useState([]);
+
 
   useEffect(() => {
-    const initData = async () => {
-      if (process.env.NODE_ENV === 'development') {
-        try {
-          await initializeDummyData();
-        } catch (error) {
-          console.warn('Failed to initialize dummy data:', error);
-        }
+    const fetchRecommendations = async () => {
+      if (!user) return;
+  
+      try {
+        const userRef = doc(db, 'users', user.uid);
+        const userSnap = await getDoc(userRef);
+        const userData = userSnap.data();
+        const traits = userData?.tasteProfile?.personalityTraits || {};
+  
+        const topMatches = matchSideQuests(traits);
+        setRecommendedQuests(topMatches);
+      } catch (error) {
+        console.error('Error loading recommended quests:', error);
       }
     };
-    
-    initData();
-  }, []);
+  
+    fetchRecommendations();
+  }, [user]);
+  
 
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
@@ -85,7 +99,7 @@ export default function Dashboard() {
               <h2 className={`text-2xl font-bold mb-4 ${isDarkMode ? 'text-white' : 'text-emerald-900'}`}>
                 Available Quests
               </h2>
-              <QuestList />
+              <QuestList quests={recommendedQuests} />
             </motion.div>
           </div>
 

@@ -14,15 +14,18 @@ const QuestCard = ({ quest: initialQuest }) => {
   
   // Set up real-time listener for quest updates
   useEffect(() => {
+    if (!initialQuest.id) return;
+  
     const questRef = doc(db, 'quests', initialQuest.id);
     const unsubscribe = onSnapshot(questRef, (doc) => {
       if (doc.exists()) {
         setQuest({ id: doc.id, ...doc.data() });
       }
     });
-
+  
     return () => unsubscribe();
   }, [initialQuest.id]);
+  
 
   const getQuestIcon = (category) => {
     switch (category) {

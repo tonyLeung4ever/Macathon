@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
+import { db } from '../config/firebase';
+import { doc, updateDoc } from 'firebase/firestore';
+import { auth } from '../config/firebase';
 import onboardingQuestions from '../services/data/onboardingQuestions.json';
 
 export default function PersonalityQuiz() {
@@ -19,16 +22,33 @@ export default function PersonalityQuiz() {
     setCurrentQuestion(currentQuestion + 1);
   };
 
+  // When quiz completes, save tally to user doc in Firestore
   useEffect(() => {
+    const saveProfile = async () => {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      try {
+        const userRef = doc(db, 'users', user.uid);
+        await updateDoc(userRef, {
+          'tasteProfile.personalityTraits': tagTally,
+          updatedAt: new Date().toISOString()
+        });
+        navigate('/dashboard');
+      } catch (error) {
+        console.error("Failed to save personality profile:", error);
+      }
+    };
+
     if (currentQuestion >= onboardingQuestions.length) {
-      navigate('/dashboard');
+      saveProfile();
     }
-  }, [currentQuestion, navigate]);
+  }, [currentQuestion, tagTally, navigate]);
 
   if (currentQuestion >= onboardingQuestions.length) {
     return (
       <div className="p-4 text-center">
-        <h2 className="text-xl font-bold">Redirecting to your dashboard...</h2>
+        <h2 className="text-xl font-bold">Saving your profile...</h2>
       </div>
     );
   }
