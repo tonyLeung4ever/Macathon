@@ -1,4 +1,4 @@
-# SideQuest
+# SideQuest - access it from the comp1/uiOverhaul!!
 
 University life can be overwhelming — making meaningful connections often feels like a high-stakes commitment. Traditional clubs and societies require regular attendance, active group chats, and long waits for events.  
 **SideQuest** was born to change that.
@@ -43,7 +43,7 @@ Instead of filling out boring forms or committing to long-term memberships, stud
 ## 🎯 Why SideQuest?
 
 SideQuest isn't just about activities — it's about **lowering the barrier to social discovery**.  
-We believe that **belonging shouldn't feel like a burden**.  
+We believe that **In this generation, we don't  commit haha**.  
 Every student deserves lightweight, meaningful ways to explore their campus life — and maybe discover something new about themselves along the way.
 
 ---
