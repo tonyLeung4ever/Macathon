@@ -261,9 +261,13 @@ export const cleanupExpiredQuests = async () => {
   }
 };
 
-// Modify joinQuest function to check event time
+// Join a quest
 export const joinQuest = async (questId, userId, startSolo = false) => {
   try {
+    if (!questId || !userId) {
+      throw new Error('Quest ID and User ID are required');
+    }
+
     const questRef = doc(db, 'quests', questId);
     const questDoc = await getDoc(questRef);
     
@@ -273,7 +277,7 @@ export const joinQuest = async (questId, userId, startSolo = false) => {
     
     const quest = questDoc.data();
     const now = new Date();
-    let eventDateTime = quest.eventDateTime;
+    let eventDateTime = quest.startTime || quest.eventDateTime;
     
     // If eventDateTime is not set or invalid, set it to a default time
     if (!eventDateTime || isNaN(new Date(eventDateTime).getTime())) {
@@ -281,7 +285,7 @@ export const joinQuest = async (questId, userId, startSolo = false) => {
     }
 
     // Check if the quest has already started
-    if (new Date(eventDateTime) < now) {
+    if (eventDateTime && new Date(eventDateTime) < now) {
       throw new Error('This quest has already started');
     }
 
@@ -298,12 +302,21 @@ export const joinQuest = async (questId, userId, startSolo = false) => {
       throw new Error('This quest is no longer available');
     }
 
-    if ((quest.teamMembers?.length || 0) >= quest.maxTeamSize) {
+    const teamMembers = quest.teamMembers || [];
+    const currentTeamSize = teamMembers.length;
+    const maxTeamSize = quest.maxTeamSize || 4;
+
+    if (currentTeamSize >= maxTeamSize) {
       throw new Error('Quest team is already full');
     }
 
     if (user.activeQuestId) {
       throw new Error('You already have an active quest');
+    }
+
+    // Check if user is already on the team
+    if (teamMembers.some(member => member.userId === userId)) {
+      throw new Error('You have already joined this quest');
     }
 
     const teamMember = {
@@ -313,14 +326,15 @@ export const joinQuest = async (questId, userId, startSolo = false) => {
       status: 'active'
     };
 
-    const newStatus = (quest.teamMembers?.length || 0) + 1 >= quest.minTeamSize ? 'active' : 'forming';
+    const minTeamSize = quest.minTeamSize || 1;
+    const newStatus = (currentTeamSize + 1) >= minTeamSize ? 'active' : 'forming';
     const durationHours = quest.durationHours || parseInt(quest.duration) || 2;
     const endTime = new Date(now.getTime() + (durationHours * 60 * 60 * 1000));
 
     // Update quest with new team member and timing information
     await updateDoc(questRef, {
       teamMembers: arrayUnion(teamMember),
-      currentTeamSize: (quest.teamMembers?.length || 0) + 1,
+      currentTeamSize: currentTeamSize + 1,
       status: newStatus,
       startDate: now.toISOString(),
       endTime: endTime.toISOString(),
@@ -359,6 +373,10 @@ export const getQuestTeamMembers = async (questId) => {
 // Complete a quest
 export const completeQuest = async (questId, userId) => {
   try {
+    if (!questId || !userId) {
+      throw new Error('Quest ID and User ID are required');
+    }
+
     const questRef = doc(db, 'quests', questId);
     const questDoc = await getDoc(questRef);
     
@@ -374,23 +392,28 @@ export const completeQuest = async (questId, userId) => {
     );
     
     // Update all team members' states
-    const updatePromises = usersSnapshot.docs.map(userDoc => 
-      updateDoc(doc(db, 'users', userDoc.id), {
+    const updatePromises = usersSnapshot.docs.map(userDoc => {
+      const completedQuest = {
+        questId,
+        completedAt: new Date(),
+        title: quest.title || 'Unnamed Quest',
+        teamSize: usersSnapshot.size || 1
+      };
+
+      return updateDoc(doc(db, 'users', userDoc.id), {
         activeQuestId: null,
         activeQuestStartDate: null,
-        completedQuests: arrayUnion({
-          questId,
-          completedAt: new Date(),
-          title: quest.title,
-          teamSize: usersSnapshot.size
-        })
-      })
-    );
+        completedQuests: arrayUnion(completedQuest)
+      });
+    });
     
     await Promise.all(updatePromises);
     
-    // Delete the quest
-    await deleteDoc(questRef);
+    // Update the quest status instead of deleting it
+    await updateDoc(questRef, {
+      status: 'completed',
+      completedAt: new Date().toISOString()
+    });
     
     return true;
   } catch (error) {

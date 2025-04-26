@@ -24,6 +24,7 @@ export default function ActiveQuestCard({ questId }) {
   const [quest, setQuest] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [completing, setCompleting] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -38,7 +39,18 @@ export default function ActiveQuestCard({ questId }) {
       doc(db, 'quests', questId),
       (doc) => {
         if (doc.exists()) {
-          setQuest({ id: doc.id, ...doc.data() });
+          const questData = doc.data();
+          setQuest({
+            id: doc.id,
+            ...questData,
+            teamMembers: questData.teamMembers || [],
+            tags: questData.tags || [],
+            title: questData.title || 'Unnamed Quest',
+            description: questData.description || 'No description available',
+            location: questData.location || 'No location set',
+            duration: questData.duration || 'Not specified',
+            status: questData.status || 'open'
+          });
         } else {
           // Quest was deleted
           setQuest(null);
@@ -62,14 +74,14 @@ export default function ActiveQuestCard({ questId }) {
     }
 
     try {
-      setLoading(true);
+      setCompleting(true);
       await completeQuest(quest.id, user.uid);
       // Force a page reload to refresh all data
       window.location.reload();
     } catch (error) {
       console.error('Error completing quest:', error);
       setError('Failed to complete quest. Please try again.');
-      setLoading(false);
+      setCompleting(false);
     }
   };
 
@@ -140,29 +152,29 @@ export default function ActiveQuestCard({ questId }) {
         </div>
         <div className="flex items-center text-sm text-gray-500">
           <span className="font-medium mr-2">👥 Team Size:</span>
-          {quest.teamMembers?.length || 0}/{quest.maxTeamSize}
+          {quest.teamMembers?.length || 0}/{quest.maxTeamSize || 1}
         </div>
       </div>
 
-      {!quest.teamMembers?.length > 0 && (
+      {quest.teamMembers && quest.teamMembers.length > 0 && (
         <div className="mb-6">
           <h4 className="text-sm font-medium text-gray-900 mb-2">Team Members:</h4>
           <div className="space-y-2">
-            {quest.teamMembers?.map((member) => (
+            {quest.teamMembers.map((member, index) => (
               <motion.div
-                key={member.userId}
+                key={member.userId || `member-${index}`}
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 className="flex items-center justify-between bg-white p-2 rounded shadow-sm"
               >
                 <div className="flex items-center">
                   <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-emerald-500 flex items-center justify-center text-white font-medium">
-                    {member.displayName[0].toUpperCase()}
+                    {member.displayName?.[0]?.toUpperCase() || 'A'}
                   </div>
-                  <span className="ml-2 text-sm text-gray-700">{member.displayName}</span>
+                  <span className="ml-2 text-sm text-gray-700">{member.displayName || 'Anonymous'}</span>
                 </div>
                 <span className="text-xs text-gray-500">
-                  Joined {new Date(member.joinedAt).toLocaleDateString()}
+                  Joined {member.joinedAt ? new Date(member.joinedAt).toLocaleDateString() : 'Unknown date'}
                 </span>
               </motion.div>
             ))}
@@ -173,9 +185,12 @@ export default function ActiveQuestCard({ questId }) {
       <div className="flex">
         <button
           onClick={handleCompleteQuest}
-          className="w-full px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors font-medium"
+          disabled={completing}
+          className={`w-full px-4 py-2 ${completing 
+            ? 'bg-gray-400' 
+            : 'bg-amber-600 hover:bg-amber-700'} text-white rounded-lg transition-colors font-medium`}
         >
-          Complete Quest
+          {completing ? 'Completing...' : 'Complete Quest'}
         </button>
       </div>
 

@@ -8,42 +8,122 @@ import { SparklesIcon as SparklesIconOutline } from '@heroicons/react/24/outline
 import { UserGroupIcon as UserGroupIconOutline } from '@heroicons/react/24/outline';
 import { TrophyIcon as TrophyIconOutline } from '@heroicons/react/24/outline';
 import { matchSideQuests } from '../utils/matchSideQuests';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 
-
+// Helper function to add start times to quests
+const addStartTimesToQuests = (quests) => {
+  const now = new Date();
+  
+  // Set start times between 1 hour and 24 hours from now
+  return quests.map(quest => {
+    if (!quest.startTime) {
+      const randomHours = 1 + Math.floor(Math.random() * 23); // 1-24 hours
+      const startTime = new Date(now.getTime() + randomHours * 60 * 60 * 1000);
+      return {
+        ...quest,
+        startTime: startTime.toISOString(),
+        teamMembers: quest.teamMembers || []
+      };
+    }
+    return quest;
+  });
+};
 
 export default function Dashboard() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [recommendedQuests, setRecommendedQuests] = useState([]);
+  const [loadingQuests, setLoadingQuests] = useState(true);
+  const [initialSetupComplete, setInitialSetupComplete] = useState(false);
 
-
+  // Initialize user data in Firestore if needed
   useEffect(() => {
-    const fetchRecommendations = async () => {
-      if (!user) return;
-  
+    const initializeUserData = async () => {
+      if (!user || !user.uid || initialSetupComplete) return;
+      
       try {
         const userRef = doc(db, 'users', user.uid);
         const userSnap = await getDoc(userRef);
-        const userData = userSnap.data();
-        const traits = userData?.tasteProfile?.personalityTraits || {};
+        
+        if (!userSnap.exists()) {
+          // Create initial user document
+          await setDoc(userRef, {
+            displayName: user.displayName || 'Explorer',
+            email: user.email,
+            createdAt: new Date().toISOString(),
+            completedQuests: [],
+            unlockedSkills: [],
+            teamMembers: [],
+            tasteProfile: {
+              personalityTraits: {
+                creative: 5,
+                outdoorsy: 3,
+                social: 4,
+                active: 4,
+                reflective: 3
+              }
+            }
+          });
+          console.log("Created new user profile");
+        }
+        setInitialSetupComplete(true);
+      } catch (error) {
+        console.error("Error initializing user data:", error);
+      }
+    };
+    
+    initializeUserData();
+  }, [user, initialSetupComplete]);
+
+  useEffect(() => {
+    const fetchRecommendations = async () => {
+      if (loading || !user || !user.uid) {
+        return;
+      }
   
-        const topMatches = matchSideQuests(traits);
-        setRecommendedQuests(topMatches);
+      try {
+        setLoadingQuests(true);
+        const userRef = doc(db, 'users', user.uid);
+        const userSnap = await getDoc(userRef);
+        const userData = userSnap.data();
+        const traits = userData?.tasteProfile?.personalityTraits || {
+          creative: 5,
+          outdoorsy: 3,
+          social: 4,
+          active: 4,
+          reflective: 3
+        };
+  
+        // Get quest recommendations and add start times
+        const matchedQuests = matchSideQuests(traits);
+        const questsWithStartTimes = addStartTimesToQuests(matchedQuests);
+        
+        setRecommendedQuests(questsWithStartTimes);
       } catch (error) {
         console.error('Error loading recommended quests:', error);
+      } finally {
+        setLoadingQuests(false);
       }
     };
   
     fetchRecommendations();
-  }, [user]);
+  }, [user, loading, initialSetupComplete]);
   
 
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
     document.documentElement.classList.toggle('dark');
   };
+
+  // If auth is still loading, show a loading spinner
+  if (loading || loadingQuests) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-emerald-500"></div>
+      </div>
+    );
+  }
 
   return (
     <div className={`min-h-screen transition-colors duration-300 ${isDarkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-amber-50 to-emerald-50'}`}>
@@ -77,6 +157,7 @@ export default function Dashboard() {
               <p className={`mt-2 ${isDarkMode ? 'text-gray-300' : 'text-emerald-700'}`}>
                 Ready to embark on your next adventure?
               </p>
+              {user && <p className="text-xs text-gray-400">User ID: {user.uid}</p>}
             </div>
             <div className="flex items-center">
               <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-400 to-emerald-500 flex items-center justify-center text-white text-2xl">

@@ -1,115 +1,224 @@
 [
     {
+      "id": "quest-1",
       "title": "Sunrise Jog & Juice",
       "description": "Start your day with a group jog around campus, ending with fresh juice and chill vibes.",
-      "tags": ["outdoorsy", "active", "motivated", "solo-friendly"]
+      "tags": ["outdoorsy", "active", "motivated", "solo-friendly"],
+      "maxTeamSize": 4,
+      "minTeamSize": 1,
+      "status": "open",
+      "teamMembers": []
     },
     {
+      "id": "quest-2",
       "title": "Golden Hour Photowalk",
       "description": "Explore campus or a nearby neighborhood snapping aesthetic photos during golden hour.",
-      "tags": ["visual", "reflective", "solo", "creative"]
+      "tags": ["visual", "reflective", "solo", "creative"],
+      "maxTeamSize": 3,
+      "minTeamSize": 1,
+      "status": "open",
+      "teamMembers": []
     },
     {
+      "id": "quest-3",
       "title": "Group Cooking Challenge",
       "description": "Collaborate on themed recipes (e.g., everything-but-the-kitchen-sink stir fry). Ingredients provided!",
-      "tags": ["creative", "tactile", "team", "foodie"]
+      "tags": ["creative", "tactile", "team", "foodie"],
+      "maxTeamSize": 5,
+      "minTeamSize": 2,
+      "status": "open",
+      "teamMembers": []
     },
     {
+      "id": "quest-4",
       "title": "Wholesome Baking Bash",
       "description": "Make cupcakes, cookies, or banana bread together—decorating is half the fun.",
-      "tags": ["cozy", "creative", "tactile", "sweet tooth"]
+      "tags": ["cozy", "creative", "tactile", "sweet tooth"],
+      "maxTeamSize": 4,
+      "minTeamSize": 2,
+      "status": "open",
+      "teamMembers": []
     },
     {
+      "id": "quest-5",
       "title": "Power Hour Group Study",
       "description": "Work on assignments together—timed sprints with lofi beats, snacks, and a little accountability.",
-      "tags": ["focused", "productive", "academic", "team"]
+      "tags": ["focused", "productive", "academic", "team"],
+      "maxTeamSize": 5,
+      "minTeamSize": 2,
+      "status": "open",
+      "teamMembers": []
     },
     {
+      "id": "quest-6",
       "title": "Study + Snacks Jam",
       "description": "A more casual study sesh with snack breaks and comfy beanbags. BYO project or readings.",
-      "tags": ["cozy", "introvert", "structured", "recharging"]
+      "tags": ["cozy", "introvert", "structured", "recharging"],
+      "maxTeamSize": 5,
+      "minTeamSize": 1,
+      "status": "open",
+      "teamMembers": []
     },
     {
+      "id": "quest-7",
       "title": "Board Game Night",
-      "description": "Classic games, party games, weird ones you’ve never heard of—pick a table and join in.",
-      "tags": ["social", "light-hearted", "fun", "casual"]
+      "description": "Classic games, party games, weird ones you've never heard of—pick a table and join in.",
+      "tags": ["social", "light-hearted", "fun", "casual"],
+      "maxTeamSize": 8,
+      "minTeamSize": 2,
+      "status": "open",
+      "teamMembers": []
     },
     {
+      "id": "quest-8",
       "title": "Strategy & Snacks Night",
       "description": "For the Settlers, Codenames, and Secret Hitler crowd. More thinking, same snacks.",
-      "tags": ["strategic", "social", "competitive", "intro-extro blend"]
+      "tags": ["strategic", "social", "competitive", "intro-extro blend"],
+      "maxTeamSize": 6,
+      "minTeamSize": 3,
+      "status": "open",
+      "teamMembers": []
     },
     {
+      "id": "quest-9",
       "title": "Cozy Movie Night",
       "description": "Blankets, fairy lights, and a vote on what to watch (comedy? thriller? Studio Ghibli?).",
-      "tags": ["cozy", "introvert", "reflective", "group"]
+      "tags": ["cozy", "introvert", "reflective", "group"],
+      "maxTeamSize": 10,
+      "minTeamSize": 2,
+      "status": "open",
+      "teamMembers": []
     },
     {
+      "id": "quest-10",
       "title": "Outdoor Movie Under the Stars",
       "description": "Big screen, open lawn, popcorn included. Just bring a hoodie.",
-      "tags": ["outdoorsy", "group", "chill", "casual"]
+      "tags": ["outdoorsy", "group", "chill", "casual"],
+      "maxTeamSize": 15,
+      "minTeamSize": 3,
+      "status": "open",
+      "teamMembers": []
     },
     {
+      "id": "quest-11",
       "title": "Themed Dance Party",
       "description": "A costume-friendly, light-on-pressure dance event (Y2K night, Silent Disco, or Glow Fest).",
-      "tags": ["extrovert", "chaotic", "fun", "movement"]
+      "tags": ["extrovert", "chaotic", "fun", "movement"],
+      "maxTeamSize": 20,
+      "minTeamSize": 5,
+      "status": "open",
+      "teamMembers": []
     },
     {
+      "id": "quest-12",
       "title": "No-Context House Party",
       "description": "Vibes only. No explanation needed. Expect spontaneous dance-offs and weird conversations.",
-      "tags": ["social", "bold", "chaotic", "adventurous"]
+      "tags": ["social", "bold", "chaotic", "adventurous"],
+      "maxTeamSize": 25,
+      "minTeamSize": 8,
+      "status": "open",
+      "teamMembers": []
     },
     
-        {
-          "title": "Cardboard Boat Race",
-          "description": "Build boats from boxes. Hope. Float. Sink.",
-          "tags": ["creative", "chaotic", "team", "tactile", "funny"]
-        },
-        {
-          "title": "Nature Journaling Walk",
-          "description": "Walk, sketch, and reflect in the uni gardens.",
-          "tags": ["outdoorsy", "reflective", "introvert", "solo", "creative"]
-        },
-        {
-          "title": "Speed-Friending",
-          "description": "Meet new people via 5-minute convos and silly icebreakers.",
-          "tags": ["social", "spontaneous", "extrovert", "curious"]
-        },
-        {
-          "title": "Two Truths & a Lie Tournament",
-          "description": "Compete to deceive and detect in a fun, chaotic game night.",
-          "tags": ["social", "funny", "bold", "light-hearted"]
-        },
-        {
-          "title": "Silent Disco in the Courtyard",
-          "description": "Everyone’s dancing… to different beats. BYO headphones.",
-          "tags": ["movement", "extrovert", "fun", "quirky"]
-        },
-        {
-          "title": "Flash Mob Rehearsal + Surprise Performance",
-          "description": "Learn a dance routine together and randomly perform it on campus.",
-          "tags": ["bold", "spontaneous", "creative", "team", "movement"]
-        },
-        {
-          "title": "Escape Room Classroom Edition",
-          "description": "DIY escape room setup with clues, props, and mild chaos.",
-          "tags": ["team", "clever", "problem-solver", "creative", "fun"]
-        },
-        {
-          "title": "Capture the Flag Night",
-          "description": "Classic outdoor team chaos with glowsticks, stealth, and strategy.",
-          "tags": ["adventurous", "strategic", "team", "outdoorsy"]
-        },
-        {
-          "title": "Murder Mystery Mixer",
-          "description": "Come in character and solve a dramatic mystery.",
-          "tags": ["roleplay", "strategic", "social", "creative", "chaotic"]
-        },
-        {
-        "title": "Courtyard Hide-and-Seek",
-        "description": "Childhood rules, campus edition. Play hide-and-seek in the courtyard with creative hiding spots and friendly chaos.",
-        "tags": ["fun", "nostalgic", "social", "chaotic", "adventurous"]
-        }
-      
-  ]
+    {
+      "id": "quest-13",
+      "title": "Cardboard Boat Race",
+      "description": "Build boats from boxes. Hope. Float. Sink.",
+      "tags": ["creative", "chaotic", "team", "tactile", "funny"],
+      "maxTeamSize": 4,
+      "minTeamSize": 2,
+      "status": "open",
+      "teamMembers": []
+    },
+    {
+      "id": "quest-14",
+      "title": "Nature Journaling Walk",
+      "description": "Walk, sketch, and reflect in the uni gardens.",
+      "tags": ["outdoorsy", "reflective", "introvert", "solo", "creative"],
+      "maxTeamSize": 3,
+      "minTeamSize": 1,
+      "status": "open",
+      "teamMembers": []
+    },
+    {
+      "id": "quest-15",
+      "title": "Speed-Friending",
+      "description": "Meet new people via 5-minute convos and silly icebreakers.",
+      "tags": ["social", "spontaneous", "extrovert", "curious"],
+      "maxTeamSize": 10,
+      "minTeamSize": 4,
+      "status": "open",
+      "teamMembers": []
+    },
+    {
+      "id": "quest-16",
+      "title": "Two Truths & a Lie Tournament",
+      "description": "Compete to deceive and detect in a fun, chaotic game night.",
+      "tags": ["social", "funny", "bold", "light-hearted"],
+      "maxTeamSize": 8,
+      "minTeamSize": 3,
+      "status": "open",
+      "teamMembers": []
+    },
+    {
+      "id": "quest-17",
+      "title": "Silent Disco in the Courtyard",
+      "description": "Everyone's dancing… to different beats. BYO headphones.",
+      "tags": ["movement", "extrovert", "fun", "quirky"],
+      "maxTeamSize": 20,
+      "minTeamSize": 5,
+      "status": "open",
+      "teamMembers": []
+    },
+    {
+      "id": "quest-18",
+      "title": "Flash Mob Rehearsal + Surprise Performance",
+      "description": "Learn a dance routine together and randomly perform it on campus.",
+      "tags": ["bold", "spontaneous", "creative", "team", "movement"],
+      "maxTeamSize": 12,
+      "minTeamSize": 4,
+      "status": "open",
+      "teamMembers": []
+    },
+    {
+      "id": "quest-19",
+      "title": "Escape Room Classroom Edition",
+      "description": "DIY escape room setup with clues, props, and mild chaos.",
+      "tags": ["team", "clever", "problem-solver", "creative", "fun"],
+      "maxTeamSize": 6,
+      "minTeamSize": 3,
+      "status": "open",
+      "teamMembers": []
+    },
+    {
+      "id": "quest-20",
+      "title": "Capture the Flag Night",
+      "description": "Classic outdoor team chaos with glowsticks, stealth, and strategy.",
+      "tags": ["adventurous", "strategic", "team", "outdoorsy"],
+      "maxTeamSize": 10,
+      "minTeamSize": 4,
+      "status": "open",
+      "teamMembers": []
+    },
+    {
+      "id": "quest-21",
+      "title": "Murder Mystery Mixer",
+      "description": "Come in character and solve a dramatic mystery.",
+      "tags": ["roleplay", "strategic", "social", "creative", "chaotic"],
+      "maxTeamSize": 8,
+      "minTeamSize": 4,
+      "status": "open",
+      "teamMembers": []
+    },
+    {
+      "id": "quest-22",
+      "title": "Courtyard Hide-and-Seek",
+      "description": "Childhood rules, campus edition. Play hide-and-seek in the courtyard with creative hiding spots and friendly chaos.",
+      "tags": ["fun", "nostalgic", "social", "chaotic", "adventurous"],
+      "maxTeamSize": 10,
+      "minTeamSize": 4,
+      "status": "open",
+      "teamMembers": []
+    }
+]
   
