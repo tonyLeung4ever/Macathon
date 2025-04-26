@@ -42,55 +42,55 @@ const LandingPage = () => {
           >
             <AnimatePresence mode="wait">
               {animationStep === 1 && (
-                <motion.p
+              <motion.p
                   key="first-line"
-                  className="text-amber-100 text-4xl mb-4 font-serif tracking-wider"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
+                className="text-amber-100 text-4xl mb-4 font-serif tracking-wider"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  transition={{ 
-                    duration: 0.8,
-                    ease: [0.16, 1, 0.3, 1]
-                  }}
-                >
-                  Clubs require commitment.
-                </motion.p>
-              )}
+                transition={{ 
+                  duration: 0.8,
+                  ease: [0.16, 1, 0.3, 1]
+                }}
+              >
+                Clubs require commitment.
+              </motion.p>
+            )}
               
               {animationStep === 3 && (
-                <motion.p
+              <motion.p
                   key="second-line"
-                  className="text-amber-100 text-4xl mb-4 font-serif tracking-wider"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
+                className="text-amber-100 text-4xl mb-4 font-serif tracking-wider"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  transition={{ 
-                    duration: 0.8,
-                    ease: [0.16, 1, 0.3, 1]
-                  }}
-                >
-                  In this generation, who commits?
-                </motion.p>
-              )}
+                transition={{ 
+                  duration: 0.8,
+                  ease: [0.16, 1, 0.3, 1]
+                }}
+              >
+                In this generation, who commits?
+              </motion.p>
+            )}
               
               {animationStep === 5 && (
-                <motion.div
+              <motion.div
                   key="question-mark"
                   className="text-amber-100 text-5xl font-serif"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ 
-                    opacity: [0, 1, 1, 0],
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ 
+                  opacity: [0, 1, 1, 0],
                     scale: [0.8, 1.2, 1.2, 1.5]
-                  }}
-                  transition={{ 
-                    duration: 1.5,
-                    times: [0, 0.3, 0.7, 1],
-                    ease: [0.16, 1, 0.3, 1]
-                  }}
-                >
+                }}
+                transition={{ 
+                  duration: 1.5,
+                  times: [0, 0.3, 0.7, 1],
+                  ease: [0.16, 1, 0.3, 1]
+                }}
+              >
                   right?
-                </motion.div>
-              )}
+              </motion.div>
+            )}
             </AnimatePresence>
           </motion.div>
         )}

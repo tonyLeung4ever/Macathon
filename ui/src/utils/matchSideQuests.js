@@ -8,7 +8,8 @@ const hardcodedQuests = [
     "maxTeamSize": 4,
     "minTeamSize": 1,
     "status": "open",
-    "teamMembers": []
+    "teamMembers": [],
+    "location": "Athletic Track, Monash Sport"
   },
   {
     "id": "quest-4",
@@ -18,7 +19,8 @@ const hardcodedQuests = [
     "maxTeamSize": 4,
     "minTeamSize": 2,
     "status": "open",
-    "teamMembers": []
+    "teamMembers": [],
+    "location": "Campus Centre Kitchen"
   },
   {
     "id": "quest-6",
@@ -28,7 +30,8 @@ const hardcodedQuests = [
     "maxTeamSize": 5,
     "minTeamSize": 1,
     "status": "open",
-    "teamMembers": []
+    "teamMembers": [],
+    "location": "Sir Louis Matheson Library"
   },
   {
     "id": "quest-7",
@@ -38,7 +41,8 @@ const hardcodedQuests = [
     "maxTeamSize": 8,
     "minTeamSize": 2,
     "status": "open",
-    "teamMembers": []
+    "teamMembers": [],
+    "location": "Campus Centre Lounge"
   },
   {
     "id": "quest-9",
@@ -48,7 +52,8 @@ const hardcodedQuests = [
     "maxTeamSize": 10,
     "minTeamSize": 2,
     "status": "open",
-    "teamMembers": []
+    "teamMembers": [],
+    "location": "Learning and Teaching Building"
   },
   {
     "id": "quest-14",
@@ -58,7 +63,8 @@ const hardcodedQuests = [
     "maxTeamSize": 3,
     "minTeamSize": 1,
     "status": "open",
-    "teamMembers": []
+    "teamMembers": [],
+    "location": "Lemon Scented Lawn"
   }
 ];
 

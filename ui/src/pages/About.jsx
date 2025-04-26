@@ -1,6 +1,11 @@
 import { motion } from 'framer-motion';
 import { SparklesIcon, HomeIcon, SunIcon } from '@heroicons/react/24/outline';
 
+// Import the team member photos
+import VanamaliPhoto from '../photos/Vanamali Sims.png';
+import KrishitaaPhoto from '../photos/Krishitaa Purusothaman.png';
+import SkyelarPhoto from '../photos/Skyelar.png';
+
 const About = () => {
   const values = [
     {
@@ -22,19 +27,19 @@ const About = () => {
 
   const team = [
     {
-      name: "John Doe",
-      role: "Growth Cultivator 🌱",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      name: "Vanamali Sims",
+      role: "Team Member 1",
+      image: VanamaliPhoto,
     },
     {
-      name: "Jane Smith",
-      role: "Innovation Gardener 🌿",
-      image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      name: "Krishitaa Purusothaman",
+      role: "Team Member 2",
+      image: KrishitaaPhoto,
     },
     {
-      name: "Mike Johnson",
-      role: "Solution Nurturer 🌳",
-      image: "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      name: "Skyelar",
+      role: "Team Member 3",
+      image: SkyelarPhoto,
     },
   ];
 
@@ -119,7 +124,7 @@ const About = () => {
                   <img
                     src={member.image}
                     alt={member.name}
-                    className="w-32 h-32 rounded-lg mx-auto mb-4 object-cover border-2 border-emerald-200 shadow-md"
+                    className="w-48 h-48 rounded-lg mx-auto mb-4 object-cover border-2 border-emerald-200 shadow-md"
                   />
                 </div>
                 <h3 className="text-xl font-semibold text-emerald-800">{member.name}</h3>
