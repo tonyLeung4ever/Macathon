@@ -247,7 +247,8 @@ export const cleanupExpiredQuests = async () => {
         for (const userDoc of usersSnapshot.docs) {
           await updateDoc(doc(db, 'users', userDoc.id), {
             activeQuestId: null,
-            activeQuestStartDate: null
+            activeQuestStartDate: null,
+            completedQuests: arrayUnion(questId)
           });
         }
         

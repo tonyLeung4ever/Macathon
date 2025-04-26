@@ -65,7 +65,7 @@ export default function ActiveQuestCard({ questId }) {
       setLoading(true);
       await completeQuest(quest.id, user.uid);
       // Force a page reload to refresh all data
-      window.location.reload();
+      navigate('/feedback'); 
     } catch (error) {
       console.error('Error completing quest:', error);
       setError('Failed to complete quest. Please try again.');
