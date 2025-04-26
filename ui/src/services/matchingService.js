@@ -138,7 +138,7 @@ const questTemplates = [
     requiredSkillLevel: 1,
     minTeamSize: 2,
     maxTeamSize: 4,
-    location: "Macalester Campus",
+    location: "Robert Menzies Building",
     durationHours: 2
   },
   {
@@ -148,7 +148,7 @@ const questTemplates = [
     requiredSkillLevel: 2,
     minTeamSize: 3,
     maxTeamSize: 5,
-    location: "Campus Grounds",
+    location: "Monash Sustainable Gardens",
     durationHours: 3
   },
   {
@@ -158,7 +158,7 @@ const questTemplates = [
     requiredSkillLevel: 2,
     minTeamSize: 2,
     maxTeamSize: 3,
-    location: "Grand Avenue",
+    location: "Lemon Scented Lawn",
     durationHours: 2
   },
   {
@@ -168,7 +168,7 @@ const questTemplates = [
     requiredSkillLevel: 1,
     minTeamSize: 2,
     maxTeamSize: 4,
-    location: "Janet Wallace Fine Arts Center",
+    location: "Monash University Museum of Art",
     durationHours: 4
   },
   {
@@ -178,7 +178,7 @@ const questTemplates = [
     requiredSkillLevel: 2,
     minTeamSize: 3,
     maxTeamSize: 6,
-    location: "Campus Center",
+    location: "Campus Centre",
     durationHours: 3
   },
   {
@@ -188,7 +188,7 @@ const questTemplates = [
     requiredSkillLevel: 3,
     minTeamSize: 2,
     maxTeamSize: 4,
-    location: "Library",
+    location: "Sir Louis Matheson Library",
     durationHours: 2
   }
 ];
@@ -438,7 +438,7 @@ export const initializeDummyData = async () => {
         status: "open",
         currentTeamSize: 0,
         interestedUsers: [],
-        location: "City Center",
+        location: "Monash Sports Complex",
         duration: "4",
         eventTime: "2:00 PM"
       },
@@ -453,7 +453,7 @@ export const initializeDummyData = async () => {
         status: "open",
         currentTeamSize: 0,
         interestedUsers: [],
-        location: "Local Park",
+        location: "Science Gardens",
         duration: "3",
         eventTime: "10:00 AM"
       },
@@ -468,7 +468,7 @@ export const initializeDummyData = async () => {
         status: "open",
         currentTeamSize: 0,
         interestedUsers: [],
-        location: "Online",
+        location: "Learning and Teaching Building",
         duration: "4",
         eventTime: "3:30 PM"
       }
@@ -488,7 +488,7 @@ export const initializeDummyData = async () => {
         preferredTeamSize: 3,
         availableHoursPerWeek: 5,
         personalityTraits: ["creative", "outgoing"],
-        location: "City Center"
+        location: "Monash Sports Complex"
       },
       {
         userId: "user2",
@@ -497,7 +497,7 @@ export const initializeDummyData = async () => {
         preferredTeamSize: 4,
         availableHoursPerWeek: 8,
         personalityTraits: ["patient", "organized"],
-        location: "Suburbs"
+        location: "Monash Halls Residence"
       },
       {
         userId: "user3",
@@ -506,7 +506,7 @@ export const initializeDummyData = async () => {
         preferredTeamSize: 3,
         availableHoursPerWeek: 10,
         personalityTraits: ["analytical", "creative"],
-        location: "Online"
+        location: "Engineering Faculty"
       }
     ];
 

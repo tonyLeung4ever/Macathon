@@ -3,25 +3,30 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const LandingPage = () => {
-  const [showFirstLine, setShowFirstLine] = useState(false);
-  const [showSecondLine, setShowSecondLine] = useState(false);
-  const [showQuestionMark, setShowQuestionMark] = useState(false);
+  const [animationStep, setAnimationStep] = useState(0);
   const [transitionToMain, setTransitionToMain] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const timer1 = setTimeout(() => setShowFirstLine(true), 1000);
-    const timer2 = setTimeout(() => setShowSecondLine(true), 2500);
-    const timer3 = setTimeout(() => setShowQuestionMark(true), 4000);
-    const timer4 = setTimeout(() => setTransitionToMain(true), 5500);
-    const timer5 = setTimeout(() => navigate('/dashboard'), 6000);
+    const timers = [
+      // Show first line
+      setTimeout(() => setAnimationStep(1), 800),
+      // Hide first line
+      setTimeout(() => setAnimationStep(2), 2000),
+      // Show second line
+      setTimeout(() => setAnimationStep(3), 2200),
+      // Hide second line
+      setTimeout(() => setAnimationStep(4), 3400),
+      // Show right?
+      setTimeout(() => setAnimationStep(5), 3600),
+      // Transition out
+      setTimeout(() => setTransitionToMain(true), 5000),
+      // Navigate away
+      setTimeout(() => navigate('/dashboard'), 5400)
+    ];
 
     return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-      clearTimeout(timer3);
-      clearTimeout(timer4);
-      clearTimeout(timer5);
+      timers.forEach(timer => clearTimeout(timer));
     };
   }, [navigate]);
 
@@ -35,49 +40,58 @@ const LandingPage = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            {showFirstLine && (
-              <motion.p
-                className="text-amber-100 text-4xl mb-4 font-serif tracking-wider"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ 
-                  duration: 0.8,
-                  ease: [0.16, 1, 0.3, 1]
-                }}
-              >
-                Clubs require commitment.
-              </motion.p>
-            )}
-            {showSecondLine && (
-              <motion.p
-                className="text-amber-100 text-4xl mb-4 font-serif tracking-wider"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ 
-                  duration: 0.8,
-                  ease: [0.16, 1, 0.3, 1]
-                }}
-              >
-                In this generation, who commits?
-              </motion.p>
-            )}
-            {showQuestionMark && (
-              <motion.div
-                className="text-amber-100 text-9xl font-serif"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ 
-                  opacity: [0, 1, 1, 0],
-                  scale: [0.8, 1.2, 1.5, 2]
-                }}
-                transition={{ 
-                  duration: 1.5,
-                  times: [0, 0.3, 0.7, 1],
-                  ease: [0.16, 1, 0.3, 1]
-                }}
-              >
-                ?
-              </motion.div>
-            )}
+            <AnimatePresence mode="wait">
+              {animationStep === 1 && (
+                <motion.p
+                  key="first-line"
+                  className="text-amber-100 text-4xl mb-4 font-serif tracking-wider"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ 
+                    duration: 0.8,
+                    ease: [0.16, 1, 0.3, 1]
+                  }}
+                >
+                  Clubs require commitment.
+                </motion.p>
+              )}
+              
+              {animationStep === 3 && (
+                <motion.p
+                  key="second-line"
+                  className="text-amber-100 text-4xl mb-4 font-serif tracking-wider"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ 
+                    duration: 0.8,
+                    ease: [0.16, 1, 0.3, 1]
+                  }}
+                >
+                  In this generation, who commits?
+                </motion.p>
+              )}
+              
+              {animationStep === 5 && (
+                <motion.div
+                  key="question-mark"
+                  className="text-amber-100 text-5xl font-serif"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ 
+                    opacity: [0, 1, 1, 0],
+                    scale: [0.8, 1.2, 1.2, 1.5]
+                  }}
+                  transition={{ 
+                    duration: 1.5,
+                    times: [0, 0.3, 0.7, 1],
+                    ease: [0.16, 1, 0.3, 1]
+                  }}
+                >
+                  right?
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
         )}
       </AnimatePresence>

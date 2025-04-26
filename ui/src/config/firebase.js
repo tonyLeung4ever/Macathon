@@ -391,7 +391,7 @@ export const dummyQuests = [
     category: "gardening",
     duration: "4 hours",
     startTime: new Date(Date.now() + 4 * 60 * 60 * 1000).toISOString(), // 4 hours from now
-    location: "Campus Green",
+    location: "Monash Sustainable Gardens",
     tags: ["gardening", "community", "outdoor"],
     matchScore: 75
   },
@@ -419,7 +419,7 @@ export const dummyQuests = [
     category: "art",
     duration: "2.5 hours",
     startTime: new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString(), // 5 hours from now
-    location: "Monash Gallery",
+    location: "Monash University Museum of Art",
     tags: ["art", "exploration", "culture"],
     matchScore: 75
   },
