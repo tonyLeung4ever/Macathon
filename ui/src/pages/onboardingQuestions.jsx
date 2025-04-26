@@ -9,6 +9,16 @@ import { soundManager } from '../utils/sound';
 import Mascot from '../components/Mascot';
 import { COLLECTIONS } from '../config/firebase';
 
+// Function to shuffle array (Fisher-Yates algorithm)
+const shuffleArray = (array) => {
+  const newArray = [...array];
+  for (let i = newArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+  }
+  return newArray;
+};
+
 export default function PersonalityQuiz() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [tagTally, setTagTally] = useState({});
@@ -24,11 +34,26 @@ export default function PersonalityQuiz() {
       try {
         const questionsRef = collection(db, COLLECTIONS.ONBOARDING_QUESTIONS);
         const snapshot = await getDocs(questionsRef);
-        const loadedQuestions = snapshot.docs.map(doc => ({
+        let loadedQuestions = snapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
         }));
-        setQuestions(loadedQuestions);
+        
+        // Deduplicate questions based on question text
+        const uniqueQuestions = [];
+        const questionTexts = new Set();
+        
+        loadedQuestions.forEach(q => {
+          if (!questionTexts.has(q.question)) {
+            questionTexts.add(q.question);
+            uniqueQuestions.push(q);
+          }
+        });
+        
+        // Shuffle the questions to prevent the same sequence every time
+        const shuffledQuestions = shuffleArray(uniqueQuestions);
+        
+        setQuestions(shuffledQuestions);
         setLoading(false);
       } catch (error) {
         console.error("Error loading questions:", error);

@@ -28,10 +28,7 @@ export const getStatusDisplay = (status) => {
 };
 
 export default function QuestList({ quests = null }) {
-  const [spots, setSpots] = useState(quests ? quests.filter(quest => 
-    quest.status !== 'completed' && 
-    quest.status !== 'expired'
-  ) : []);
+  const [spots, setSpots] = useState(quests ? quests : []);
   const [loading, setLoading] = useState(quests === null);
   const [error, setError] = useState(null);
   const { user } = useAuth();
@@ -119,12 +116,8 @@ export default function QuestList({ quests = null }) {
       
       return () => clearInterval(cleanup);
     } else {
-      // Filter out completed quests from passed-in quests
-      const filteredQuests = quests.filter(quest => 
-        quest.status !== 'completed' && 
-        quest.status !== 'expired'
-      );
-      setSpots(filteredQuests);
+      // Use all the quests passed in directly, without filtering
+      setSpots(quests);
       setLoading(false);
     }
   }, [quests, user?.uid]);
